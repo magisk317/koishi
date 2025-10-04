@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  koishi:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - KOISHI_PORT=3000
+    volumes:
+      # 挂载配置文件目录
+      - ./config:/app/config
+      # 挂载数据目录
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000/status', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # 可选：添加数据库服务
+  # database:
+  #   image: postgres:15-alpine
+  #   environment:
+  #     POSTGRES_DB: koishi
+  #     POSTGRES_USER: koishi
+  #     POSTGRES_PASSWORD: koishi
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+  #   restart: unless-stopped
+
+# volumes:
+#   postgres_data:

@@ -41,6 +41,23 @@ Koishi 更为开发者准备了众多专业功能，使插件开发者得以在�
 
 [前往文档](https://koishi.chat/manual/starter/)
 
+### Docker 部署
+
+本项目支持 Docker 容器化部署，提供完整的自动化构建流程：
+
+```bash
+# 使用预构建镜像
+docker run -d \
+  --name koishi \
+  -p 3000:3000 \
+  -v $(pwd)/config:/app/config \
+  -v $(pwd)/data:/app/data \
+  -v $(pwd)/logs:/app/logs \
+  ghcr.io/magisk317/koishi:latest
+```
+
+更多 Docker 部署信息请查看 [DOCKER.md](./DOCKER.md)
+
 ## 许可证
 
 Koishi 完全使用 [MIT](./LICENSE) 协议开源，维护良好的开源生态从我做起 (*>ω<)φ
