@@ -18,10 +18,10 @@ COPY package.json ./
 COPY . .
 
 # 安装所有依赖（包括开发依赖）
-RUN yarn install
+RUN NODE_NO_WARNINGS=1 yarn install
 
 # 构建项目
-RUN yarn build
+RUN NODE_NO_WARNINGS=1 yarn build
 
 # 生产阶段
 FROM node:18-alpine AS production
@@ -42,7 +42,7 @@ RUN addgroup -g 1001 -S koishi && \
 COPY package.json ./
 
 # 只安装生产依赖
-RUN yarn install --production=true && \
+RUN NODE_NO_WARNINGS=1 yarn install --production=true && \
     yarn cache clean
 
 # 从构建阶段复制构建产物
@@ -58,6 +58,7 @@ EXPOSE 3000
 # 设置环境变量
 ENV NODE_ENV=production
 ENV KOISHI_PORT=3000
+ENV NODE_NO_WARNINGS=1
 
 # 健康检查 - 检查进程是否运行
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \

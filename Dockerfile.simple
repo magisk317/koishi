@@ -14,10 +14,10 @@ COPY package.json ./
 COPY . .
 
 # 安装依赖
-RUN yarn install
+RUN NODE_NO_WARNINGS=1 yarn install
 
 # 构建项目
-RUN yarn build
+RUN NODE_NO_WARNINGS=1 yarn build
 
 # 暴露端口
 EXPOSE 3000
