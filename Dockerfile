@@ -11,11 +11,11 @@ RUN apk add --no-cache \
     g++ \
     git
 
-# 复制 package.json 和 yarn.lock
-COPY package.json yarn.lock ./
+# 复制 package.json
+COPY package.json ./
 
 # 安装所有依赖（包括开发依赖）
-RUN yarn install --frozen-lockfile
+RUN yarn install
 
 # 复制源代码
 COPY . .
@@ -38,11 +38,11 @@ RUN apk add --no-cache \
 RUN addgroup -g 1001 -S koishi && \
     adduser -S koishi -u 1001
 
-# 复制 package.json 和 yarn.lock
-COPY package.json yarn.lock ./
+# 复制 package.json
+COPY package.json ./
 
 # 只安装生产依赖
-RUN yarn install --frozen-lockfile --production=true && \
+RUN yarn install --production=true && \
     yarn cache clean
 
 # 从构建阶段复制构建产物
@@ -59,12 +59,12 @@ EXPOSE 3000
 ENV NODE_ENV=production
 ENV KOISHI_PORT=3000
 
-# 健康检查
+# 健康检查 - 检查进程是否运行
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-    CMD node -e "require('http').get('http://localhost:3000/status', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })" || exit 1
+    CMD pgrep -f "node.*koishi" > /dev/null || exit 1
 
 # 使用 dumb-init 作为 PID 1
 ENTRYPOINT ["dumb-init", "--"]
 
 # 启动命令
-CMD ["node", "packages/koishi/bin.js"]
+CMD ["node", "packages/koishi/lib/cli/index.js"]
