@@ -8,7 +8,7 @@ describe('Miscellaneous', () => {
   })
 
   it('enumKeys', () => {
-    enum Foo { bar, baz }
+    const Foo = { bar: 0, baz: 1 } as const
     expect(enumKeys(Foo)).to.deep.equal(['bar', 'baz'])
   })
 

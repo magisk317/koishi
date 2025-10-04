@@ -2,6 +2,7 @@
   "name": "@koishijs/core",
   "description": "Core Features for Koishi",
   "version": "4.18.9",
+  "type": "module",
   "main": "lib/index.cjs",
   "module": "lib/index.mjs",
   "typings": "lib/index.d.ts",

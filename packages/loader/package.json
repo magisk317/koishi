@@ -2,6 +2,7 @@
   "name": "@koishijs/loader",
   "description": "Config Loader for Koishi",
   "version": "4.6.9",
+  "type": "module",
   "main": "lib/index.js",
   "module": "lib/index.mjs",
   "types": "lib/index.d.ts",

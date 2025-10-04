@@ -466,4 +466,4 @@ export abstract class Loader {
   }
 }
 
-export default Loader
+export { Loader }
