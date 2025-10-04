@@ -34,7 +34,12 @@
     "test": "NODE_NO_WARNINGS=1 yakumo mocha -r esbuild-register -r yml-register --exit",
     "test:json": "shx rm -rf coverage && NODE_NO_WARNINGS=1 c8 -r json yarn test",
     "test:html": "shx rm -rf coverage && NODE_NO_WARNINGS=1 c8 -r html yarn test",
-    "test:text": "shx rm -rf coverage && NODE_NO_WARNINGS=1 c8 -r text yarn test"
+    "test:text": "shx rm -rf coverage && NODE_NO_WARNINGS=1 c8 -r text yarn test",
+    "update-deps": "node scripts/update-deps.cjs",
+    "update-deps:patch": "node scripts/update-deps.cjs patch --yes",
+    "update-deps:minor": "node scripts/update-deps.cjs minor --yes",
+    "update-deps:major": "node scripts/update-deps.cjs major --yes",
+    "check-deps": "node scripts/update-deps.cjs --dry-run"
   },
   "license": "MIT",
   "devDependencies": {
@@ -59,7 +64,7 @@
     "globby": "^11.1.0",
     "kleur": "^4.1.5",
     "latest-version": "^5.1.0",
-    "mocha": "^10.0.0",
+    "mocha": "^9.2.2",
     "ora": "^5.4.1",
     "prompts": "^2.4.2",
     "semver": "^7.6.3",

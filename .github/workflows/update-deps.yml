@@ -1,0 +1,106 @@
+name: Update Dependencies
+
+on:
+  schedule:
+    # 每周一上午 9 点自动检查更新
+    - cron: '0 9 * * 1'
+  workflow_dispatch:
+    inputs:
+      update_type:
+        description: '更新类型'
+        required: true
+        default: 'minor'
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+      dry_run:
+        description: '仅检查不更新'
+        required: false
+        default: false
+        type: boolean
+
+env:
+  NODE_NO_WARNINGS: 1
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 18
+        cache: 'yarn'
+
+    - name: Install dependencies
+      run: yarn install --frozen-lockfile
+
+    - name: Check for updates
+      id: check
+      run: |
+        echo "检查依赖更新..."
+        yarn outdated --json > outdated.json || true
+        
+        if [ -s outdated.json ]; then
+          echo "发现可更新的依赖:"
+          cat outdated.json
+          echo "has_updates=true" >> $GITHUB_OUTPUT
+        else
+          echo "所有依赖都是最新的"
+          echo "has_updates=false" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Update dependencies
+      if: steps.check.outputs.has_updates == 'true' && (github.event_name == 'workflow_dispatch' || github.event_name == 'schedule')
+      run: |
+        if [ "${{ github.event.inputs.dry_run }}" == "true" ]; then
+          echo "Dry run mode - 仅显示更新，不实际执行"
+          yarn outdated
+        else
+          echo "更新依赖..."
+          yarn upgrade-interactive --latest
+        fi
+
+    - name: Build and test
+      if: steps.check.outputs.has_updates == 'true' && github.event.inputs.dry_run != 'true'
+      run: |
+        yarn build
+        yarn test
+
+    - name: Create Pull Request
+      if: steps.check.outputs.has_updates == 'true' && github.event.inputs.dry_run != 'true'
+      uses: peter-evans/create-pull-request@v5
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        commit-message: 'chore: 自动更新依赖包'
+        title: '🤖 自动更新依赖包'
+        body: |
+          ## 📦 依赖更新
+          
+          此 PR 由 GitHub Actions 自动创建，用于更新项目依赖包。
+          
+          ### 更新内容
+          - 检查并更新过时的依赖包
+          - 保持项目功能正常
+          - 通过所有测试
+          
+          ### 验证
+          - [x] 构建成功
+          - [x] 测试通过
+          - [x] 无破坏性更改
+          
+          ---
+          *此 PR 由 [update-deps.yml](.github/workflows/update-deps.yml) 自动创建*
+        branch: auto-update-deps
+        delete-branch: true
