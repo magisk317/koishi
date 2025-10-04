@@ -40,6 +40,7 @@
   "devDependencies": {
     "@cordisjs/eslint-config": "^1.1.1",
     "cordis": "^3.18.1",
+    "@cordisjs/plugin-http": "^0.6.3",
     "@octokit/webhooks-types": "^7.4.0",
     "@sinonjs/fake-timers": "^6.0.1",
     "@types/mocha": "^9.1.1",
