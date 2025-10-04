@@ -8,7 +8,7 @@ RUN apk add --no-cache python3 make g++ git
 # 复制文件并构建
 COPY package.json ./
 COPY . .
-RUN NODE_NO_WARNINGS=1 yarn install && NODE_NO_WARNINGS=1 yarn build
+RUN NODE_NO_WARNINGS=1 yarn install 2>/dev/null && NODE_NO_WARNINGS=1 yarn build
 
 # 运行时配置
 EXPOSE 3000
