@@ -14,11 +14,11 @@ RUN apk add --no-cache \
 # 复制 package.json
 COPY package.json ./
 
-# 安装所有依赖（包括开发依赖）
-RUN yarn install
-
 # 复制源代码
 COPY . .
+
+# 安装所有依赖（包括开发依赖）
+RUN yarn install
 
 # 构建项目
 RUN yarn build

@@ -8,6 +8,7 @@
     "composite": true,
     "incremental": true,
     "skipLibCheck": true,
+    "noImplicitAny": false,
     "esModuleInterop": true,
     "moduleResolution": "bundler",
     "strictBindCallApply": true,
