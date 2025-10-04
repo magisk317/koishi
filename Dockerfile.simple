@@ -24,6 +24,7 @@ EXPOSE 3000
 
 # 设置环境变量
 ENV NODE_ENV=production
+ENV NODE_NO_WARNINGS=1
 
 # 启动命令
 CMD ["node", "packages/koishi/lib/cli/index.js"]
